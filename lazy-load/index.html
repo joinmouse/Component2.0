@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    .ct {
+      margin: 0 auto;
+      width: 1200px;
+    }
+    .clearfix::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+    .ct li {
+      list-style: none;
+      height: 400px;
+      width:300px;
+      float: left;
+      margin: 20px;
+    }
+    h4,h3 {
+      padding:5px;
+      background:#ccc;
+      text-align: center;
+    }
+    
+  </style>
+</head>
+<body>
+
+<h4>请滑动(please slide)</h4>  
+<ul class="ct clearfix">
+  <li><a href="#"><img data-src="image/1.JPG"></a></li>
+  <li><a href="#"><img data-src="image/2.JPG"></a></li>
+  <li><a href="#"><img data-src="image/3.JPG"></a></li>
+  <li><a href="#"><img data-src="image/4.JPG"></a></li>
+  <li><a href="#"><img data-src="image/5.JPG"></a></li>
+  <li><a href="#"><img data-src="image/6.JPG"></a></li>
+  <li><a href="#"><img data-src="image/7.JPG"></a></li>
+  <li><a href="#"><img data-src="image/8.JPG"></a></li>
+  <li><a href="#"><img data-src="image/9.JPG"></a></li>
+  <li><a href="#"><img data-src="image/10.JPG"></a></li>
+  <li><a href="#"><img data-src="image/11.JPG"></a></li>
+  <li><a href="#"><img data-src="image/12.JPG"></a></li>
+  <li><a href="#"><img data-src="image/13.JPG"></a></li>
+  <li><a href="#"><img data-src="image/14.JPG"></a></li>
+  <li><a href="#"><img data-src="image/15.JPG"></a></li>
+  <li><a href="#"><img data-src="image/16.JPG"></a></li>
+  <li><a href="#"><img data-src="image/17.JPG"></a></li>
+  <li><a href="#"><img data-src="image/18.JPG"></a></li>
+</ul>
+<h3>人家也是有底线的哦</h3>  
+
+  
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script>
+
+//1.面向对象封装代码
+var Lazyload = function(img){
+  this.target = img
+  this.addEvent();
+}
+Lazyload.prototype.addEvent = function(){
+  var that = this 
+  var target = this.target
+  $(window).on('scroll',function(){
+      //检查以下是否加载当前图片，检查当前图片是否在显示区域
+      var windowHeight = $(window).height()
+      var scrollTop = $(window).scrollTop()
+      var offsetTop = target.offset().top
+      var nodeHeight = target.height()
+      //通过条件判断什么情况下加载图片
+      var condition1 = scrollTop<offsetTop+nodeHeight
+      var condition2 = scrollTop>offsetTop-windowHeight
+      if(condition1&&condition2) {
+        that.triggerLoad()
+      }
+  })
+}
+Lazyload.prototype.triggerLoad = function(){
+    var target = this.target
+    console.log(target)
+    var url = target.attr('data-src')
+    console.log(url)
+    var img = new Image()
+    img.onload = function(){
+      target.attr('src',url)
+    }
+    img.src = url
+}
+
+//挂载事件
+$('.ct').find('img') .each(function(){
+  new Lazyload($(this))
+})
+
+/*
+//2.函数的组件封装
+//加载逻辑,遍历img->判断是否符合加载条件->加载显示
+  $(window).on('scroll',function(){
+    $('.ct img').each(function(){
+      if(isShow($(this))){
+        showImg($(this));
+      }
+    })
+  })
+
+//=>、定义加载图片
+    function showImg($imgs){
+      $imgs.each(function(){
+        var url = $(this).attr('data-src')
+        $(this).attr('src',url)
+      })
+    }
+
+//=>、判断何时加载
+    function isShow($node){
+    //获取浏览器窗口高度、滑动距离、元素在文档中与top点距离、元素高度
+      var windowHeight = $(window).height()
+          scrollTop = $(window).scrollTop()
+          offsetTop = $node.offset().top
+          nodeHeight = $node.height()
+    //windowHeight+scrollTop=offsetTop是被选定元素出现的临界点
+    //scrollTop=offsetTop+nodeHeight是被选定元素离开的临界点
+      if((windowHeight+scrollTop>offsetTop) && (scrollTop<offsetTop+nodeHeight)){
+          return true
+      }else{
+          return false
+      }
+    }
+*/
+</script>
+
+</body>
+</html>
